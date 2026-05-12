@@ -15,6 +15,14 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     min-height: 100vh;
     overflow: hidden; 
+    display: flex;
+    flex-direction: column;
+    /* Grid Background with Radial Fade */
+    background-image: 
+      radial-gradient(circle at center, transparent 0%, #000 90%),
+      linear-gradient(to right, #222 1px, transparent 1px),
+      linear-gradient(to bottom, #222 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
   }
 
   h1 {
@@ -23,22 +31,24 @@
     font-weight: 600;
     margin: 10px 0 5px;
     pointer-events: none;
+    z-index: 100;
   }
 
   .subtitle {
     text-align: center;
     color: #aaa;
-    margin: 0 0 20px;
+    margin: 0 0 10px;
     font-size: 0.95rem;
     pointer-events: none;
+    z-index: 100;
   }
 
   #workspace {
     position: relative;
+    flex-grow: 1;
     width: 100%;
-    height: calc(100vh - 120px);
-    max-width: 1600px;
     margin: 0 auto;
+    overflow: visible;
   }
 
   .card {
@@ -91,7 +101,7 @@
   .card-front .frame-number {
     font-size: 2.8rem;
     font-weight: 800;
-    margin: 0 0 10px; /* Reduced margin to save space */
+    margin: 0 0 10px;
     color: #b58a00;
     text-align: center;
   }
@@ -110,7 +120,7 @@
     line-height: 1.45;
     color: #333;
     text-align: left;
-    overflow-y: auto; /* Ensures long descriptions are scrollable if needed */
+    overflow-y: auto;
     flex-grow: 1;
     margin-bottom: 10px;
   }
@@ -160,14 +170,37 @@
   }
 
   .btn-flip:hover { background: #ffd400; border-color: #b58a00; }
+
+  .footer {
+    text-align: center;
+    padding: 10px;
+    color: #888;
+    font-size: 0.8rem;
+    z-index: 100;
+  }
+
+  .footer a {
+    color: #ffd400;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+  }
 </style>
 </head>
 <body>
 
   <h1>NASEM 2024 Equity Frames</h1>
-  <p class="subtitle">Drag cards to arrange. Use button to flip.</p>
+  <p class="subtitle">Drag to arrange and prioritize. Use button to flip.</p>
 
   <div id="workspace"></div>
+
+  <div class="footer">
+    Based on the National Academies Report: 
+    <a href="https://www.nationalacademies.org/projects/DBASSE-BOSE-18-03" target="_blank">Equity in K-12 STEM Education (2024)</a>
+  </div>
 
 <script>
   const frames = [
@@ -206,77 +239,97 @@
   const workspace = document.getElementById("workspace");
   let highestZ = 10;
 
-  // Initial Layout Settings
   const cardWidth = 320;
   const cardHeight = 540;
-  const horizontalGap = 30;
-  const verticalGap = 30;
+  const hGap = 30;
+  const vGap = 30;
 
-  frames.forEach((f, index) => {
-    const card = document.createElement("div");
-    card.className = "card";
-    
-    let row = index < 3 ? 0 : 1;
-    let col = index < 3 ? index : index - 3;
-    
-    let startX = col * (cardWidth + horizontalGap);
-    let startY = row * (cardHeight + verticalGap);
-    
-    // Offset the 2nd row to center it
-    if (row === 1) { startX += (cardWidth + horizontalGap) / 2; }
+  function initLayout() {
+    const wsWidth = workspace.offsetWidth;
+    const wsHeight = workspace.offsetHeight;
 
-    card.style.left = startX + "px";
-    card.style.top = startY + "px";
-    card.style.zIndex = index;
+    // Total width of Row 1 (3 cards)
+    const row1Width = (cardWidth * 3) + (hGap * 2);
+    // Total width of Row 2 (2 cards)
+    const row2Width = (cardWidth * 2) + hGap;
+    
+    const startX_Row1 = (wsWidth - row1Width) / 2;
+    const startX_Row2 = (wsWidth - row2Width) / 2;
+    
+    // Total height of the 2-row block
+    const totalBlockHeight = (cardHeight * 2) + vGap;
+    const startY = (wsHeight - totalBlockHeight) / 2;
 
-    card.innerHTML = `
-      <div class="card-inner">
-        <div class="card-face card-front">
-          <div class="frame-number">${f.num}</div>
-          <h2 class="frame-title">${f.title}</h2>
-          <div class="frame-desc">${f.desc}</div>
-          <button class="btn-flip">View Strategies &#8635;</button>
+    frames.forEach((f, index) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      
+      let row = index < 3 ? 0 : 1;
+      let col = index < 3 ? index : index - 3;
+      
+      let xPos = row === 0 ? startX_Row1 + (col * (cardWidth + hGap)) : startX_Row2 + (col * (cardWidth + hGap));
+      let yPos = startY + (row * (cardHeight + vGap));
+
+      card.style.left = xPos + "px";
+      card.style.top = yPos + "px";
+      card.style.zIndex = index;
+
+      card.innerHTML = `
+        <div class="card-inner">
+          <div class="card-face card-front">
+            <div class="frame-number">${f.num}</div>
+            <h2 class="frame-title">${f.title}</h2>
+            <div class="frame-desc">${f.desc}</div>
+            <button class="btn-flip">View Strategies &#8635;</button>
+          </div>
+          <div class="card-face card-back">
+            <div class="frame-number">${f.num}</div>
+            <h3 class="strategies-heading">Strategies for Educators</h3>
+            <ul class="strategies">${f.strategies.map(s => `<li>${s}</li>`).join("")}</ul>
+            <button class="btn-flip">Back to Info &#8635;</button>
+          </div>
         </div>
-        <div class="card-face card-back">
-          <div class="frame-number">${f.num}</div>
-          <h3 class="strategies-heading">Strategies for Educators</h3>
-          <ul class="strategies">${f.strategies.map(s => `<li>${s}</li>`).join("")}</ul>
-          <button class="btn-flip">Back to Info &#8635;</button>
-        </div>
-      </div>
-    `;
+      `;
 
-    // Interaction logic
-    card.querySelectorAll('.btn-flip').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        card.classList.toggle('flipped');
+      card.querySelectorAll('.btn-flip').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          card.classList.toggle('flipped');
+        });
       });
+
+      let isDragging = false;
+      let offX, offY;
+
+      card.addEventListener('mousedown', (e) => {
+        if (e.target.tagName === 'BUTTON') return;
+        isDragging = true;
+        highestZ++;
+        card.style.zIndex = highestZ;
+        offX = e.clientX - card.getBoundingClientRect().left;
+        offY = e.clientY - card.getBoundingClientRect().top;
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const rect = workspace.getBoundingClientRect();
+        card.style.left = (e.clientX - rect.left - offX) + "px";
+        card.style.top = (e.clientY - rect.top - offY) + "px";
+      });
+
+      document.addEventListener('mouseup', () => { isDragging = false; });
+
+      workspace.appendChild(card);
     });
+  }
 
-    let isDragging = false;
-    let offsetX, offsetY;
-
-    card.addEventListener('mousedown', (e) => {
-      if (e.target.tagName === 'BUTTON') return;
-      isDragging = true;
-      highestZ++;
-      card.style.zIndex = highestZ;
-      offsetX = e.clientX - card.getBoundingClientRect().left;
-      offsetY = e.clientY - card.getBoundingClientRect().top;
-    });
-
-    document.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      const workspaceRect = workspace.getBoundingClientRect();
-      card.style.left = (e.clientX - workspaceRect.left - offsetX) + "px";
-      card.style.top = (e.clientY - workspaceRect.top - offsetY) + "px";
-    });
-
-    document.addEventListener('mouseup', () => { isDragging = false; });
-
-    workspace.appendChild(card);
-  });
+  // Load layout
+  window.onload = initLayout;
+  // Adjust on window resize to keep centered
+  window.onresize = () => {
+    workspace.innerHTML = "";
+    initLayout();
+  };
 </script>
 </body>
 </html>
