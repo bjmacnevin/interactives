@@ -18,12 +18,12 @@
     display: flex;
     flex-direction: column;
     
-    /* Updated Golden Grid with Radial Fade */
+    /* Enhanced Golden Grid with stronger visibility */
     background-color: #000;
     background-image: 
-      radial-gradient(circle at center, transparent 0%, #000 85%),
-      linear-gradient(to right, rgba(255, 212, 0, 0.15) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 212, 0, 0.15) 1px, transparent 1px);
+      radial-gradient(circle at center, transparent 0%, rgba(0,0,0,1) 95%),
+      linear-gradient(to right, rgba(255, 212, 0, 0.4) 1.5px, transparent 1.5px),
+      linear-gradient(to bottom, rgba(255, 212, 0, 0.4) 1.5px, transparent 1.5px);
     background-size: 100% 100%, 50px 50px, 50px 50px;
   }
 
@@ -34,6 +34,7 @@
     margin: 10px 0 5px;
     pointer-events: none;
     z-index: 100;
+    text-shadow: 0 0 15px rgba(0,0,0,0.8);
   }
 
   .subtitle {
@@ -89,7 +90,7 @@
     border: 5px solid #ffd400;
     border-radius: 18px;
     padding: 22px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
     display: flex;
     flex-direction: column;
   }
@@ -176,9 +177,10 @@
   .footer {
     text-align: center;
     padding: 10px;
-    color: #888;
+    color: #ccc;
     font-size: 0.8rem;
     z-index: 100;
+    background: rgba(0,0,0,0.5);
   }
 
   .footer a {
@@ -243,8 +245,8 @@
 
   const cardWidth = 320;
   const cardHeight = 540;
-  const hGap = 30;
-  const vGap = 30;
+  const hGap = 40;
+  const vGap = 40;
 
   function initLayout() {
     const wsWidth = workspace.offsetWidth;
@@ -259,7 +261,7 @@
     const totalBlockHeight = (cardHeight * 2) + vGap;
     const startY = (wsHeight - totalBlockHeight) / 2;
 
-    workspace.innerHTML = ""; // Clear for resize
+    workspace.innerHTML = ""; 
 
     frames.forEach((f, index) => {
       const card = document.createElement("div");
