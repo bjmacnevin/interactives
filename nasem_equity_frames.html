@@ -17,12 +17,14 @@
     overflow: hidden; 
     display: flex;
     flex-direction: column;
-    /* Grid Background with Radial Fade */
+    
+    /* Updated Golden Grid with Radial Fade */
+    background-color: #000;
     background-image: 
-      radial-gradient(circle at center, transparent 0%, #000 90%),
-      linear-gradient(to right, #222 1px, transparent 1px),
-      linear-gradient(to bottom, #222 1px, transparent 1px);
-    background-size: 100% 100%, 40px 40px, 40px 40px;
+      radial-gradient(circle at center, transparent 0%, #000 85%),
+      linear-gradient(to right, rgba(255, 212, 0, 0.15) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 212, 0, 0.15) 1px, transparent 1px);
+    background-size: 100% 100%, 50px 50px, 50px 50px;
   }
 
   h1 {
@@ -248,17 +250,16 @@
     const wsWidth = workspace.offsetWidth;
     const wsHeight = workspace.offsetHeight;
 
-    // Total width of Row 1 (3 cards)
     const row1Width = (cardWidth * 3) + (hGap * 2);
-    // Total width of Row 2 (2 cards)
     const row2Width = (cardWidth * 2) + hGap;
     
     const startX_Row1 = (wsWidth - row1Width) / 2;
     const startX_Row2 = (wsWidth - row2Width) / 2;
     
-    // Total height of the 2-row block
     const totalBlockHeight = (cardHeight * 2) + vGap;
     const startY = (wsHeight - totalBlockHeight) / 2;
+
+    workspace.innerHTML = ""; // Clear for resize
 
     frames.forEach((f, index) => {
       const card = document.createElement("div");
@@ -323,13 +324,8 @@
     });
   }
 
-  // Load layout
   window.onload = initLayout;
-  // Adjust on window resize to keep centered
-  window.onresize = () => {
-    workspace.innerHTML = "";
-    initLayout();
-  };
+  window.onresize = initLayout;
 </script>
 </body>
 </html>
