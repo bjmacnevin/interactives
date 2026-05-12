@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NASEM 2024 Equity Frames - Interactive Workspace</title>
+<title>NASEM 2024 Equity Frames - Workspace</title>
 <style>
   * { box-sizing: border-box; }
 
@@ -14,14 +14,14 @@
     color: #fff;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     min-height: 100vh;
-    overflow: hidden; /* Prevents scrollbars while dragging */
+    overflow: hidden; 
   }
 
   h1 {
     text-align: center;
     color: #ffd400;
     font-weight: 600;
-    margin: 0 0 8px;
+    margin: 10px 0 5px;
     pointer-events: none;
   }
 
@@ -33,21 +33,22 @@
     pointer-events: none;
   }
 
-  /* The workspace allows free movement */
   #workspace {
     position: relative;
     width: 100%;
     height: calc(100vh - 120px);
+    max-width: 1400px;
+    margin: 0 auto;
   }
 
   .card {
-    position: absolute; /* Essential for overlapping/moving */
+    position: absolute;
     perspective: 1400px;
-    width: 300px;
-    height: 500px;
+    width: 320px;
+    height: 540px;
     cursor: grab;
     user-select: none;
-    touch-action: none; /* Prevents scrolling on mobile while dragging */
+    touch-action: none;
   }
 
   .card:active {
@@ -75,7 +76,7 @@
     color: #1a1a1a;
     border: 5px solid #ffd400;
     border-radius: 18px;
-    padding: 20px;
+    padding: 22px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
@@ -88,97 +89,147 @@
   }
 
   .card-front .frame-number {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     font-weight: 800;
-    margin: 5px 0 15px;
+    margin: 5px 0 20px;
     color: #b58a00;
     text-align: center;
   }
 
   .card-front .frame-title {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     text-align: left;
     margin-bottom: 15px;
     font-weight: 700;
+    line-height: 1.2;
   }
 
   .card-front .frame-desc {
     font-size: 0.85rem;
     line-height: 1.45;
     color: #333;
+    text-align: left;
     overflow-y: auto;
   }
 
   /* Back Styles */
   .card-back {
     transform: rotateY(180deg);
-    background: #fff;
   }
 
   .card-back .frame-number {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     color: #b58a00;
     text-transform: uppercase;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
   }
 
   .strategies-heading {
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 700;
-    margin-bottom: 10px;
+    color: #000;
+    margin-bottom: 12px;
   }
 
   .strategies {
     padding-left: 18px;
     font-size: 0.82rem;
-    line-height: 1.4;
+    line-height: 1.45;
+    color: #333;
     overflow-y: auto;
+    flex-grow: 1;
   }
 
-  .strategies li { margin-bottom: 8px; }
+  .strategies li { margin-bottom: 9px; }
 
   .btn-flip {
-    margin-top: auto;
-    background: #eee;
-    border: none;
-    padding: 8px;
+    margin-top: 15px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    padding: 10px;
     border-radius: 8px;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
+    font-weight: 600;
     cursor: pointer;
-    text-align: center;
+    transition: background 0.2s;
   }
 
-  .btn-flip:hover { background: #ffd400; }
+  .btn-flip:hover { background: #ffd400; border-color: #b58a00; }
 </style>
 </head>
 <body>
 
   <h1>NASEM 2024 Equity Frames</h1>
-  <p class="subtitle">Drag to move and overlap. Use the button to flip.</p>
+  <p class="subtitle">Drag cards to arrange. Use button to flip.</p>
 
   <div id="workspace"></div>
 
 <script>
   const frames = [
-    { num: "Frame 1", title: "Reducing gaps between groups", desc: "Aim to address gaps between different groups based on race, gender identity, or some other factor such as social class.", strategies: ["Analyze data for disparities", "Targeted interventions", "Inclusive classroom culture"] },
-    { num: "Frame 2", title: "Expanding opportunity and access", desc: "Focus on access to opportunities in STEM, such as social and material resources necessary to learn.", strategies: ["Inclusive teaching practices", "Community collaboration", "Extra-curricular access"] },
-    { num: "Frame 3", title: "Embracing heterogeneity", desc: "Emphasize engaging with the concerns, lived experiences, and identities of marginalized students.", strategies: ["Culturally relevant pedagogy", "Collaborative learning", "Student-led projects"] },
-    { num: "Frame 4", title: "STEM to promote justice", desc: "Center learning STEM as a resource within movements for social and socioecological justice.", strategies: ["Integrate social justice themes", "Ethical discussions", "STEM for local challenges"] },
-    { num: "Frame 5", title: "Sustainable futures", desc: "Cultivating equitable, just, and thriving social and ecological futures for human wellbeing.", strategies: ["Sustainability curricula", "Systems thinking", "Innovation for solutions"] }
+    { 
+      num: "Frame 1", 
+      title: "Reducing gaps between groups", 
+      desc: "Aim to address gaps between different groups based on race, gender identity, or some other factor such as social class. Those gaps might be related to interest in STEM, achievement, or representation within the STEM workforce.", 
+      strategies: ["Analyze data to identify and understand disparities in student performance.", "Implement targeted interventions to support underserved students.", "Foster an inclusive classroom culture that recognizes diversity."] 
+    },
+    { 
+      num: "Frame 2", 
+      title: "Expanding opportunity and access", 
+      desc: "Focus on access to opportunities in STEM, such as those that result from differences in social and material resources necessary to learn—access to well-prepared educators and high-quality curricula.", 
+      strategies: ["Adopt inclusive teaching practices for diverse learning needs.", "Collaborate with community organizations for mentorship.", "Encourage participation in extra-curricular STEM activities."] 
+    },
+    { 
+      num: "Frame 3", 
+      title: "Embracing heterogeneity", 
+      desc: "Emphasize engaging with the concerns, lived experiences, and identities of students who have been marginalized. Value the different ways of thinking and being within STEM classrooms.", 
+      strategies: ["Incorporate culturally relevant pedagogy connected to lived experience.", "Facilitate collaborative learning that values multiple viewpoints.", "Encourage student-led projects exploring individual cultural contexts."] 
+    },
+    { 
+      num: "Frame 4", 
+      title: "STEM to promote justice", 
+      desc: "Center learning STEM as a resource within movements for social and socioecological justice. Address the history of STEM as an instrument of nationalism or colonialism.", 
+      strategies: ["Design curricula that integrate social justice themes with STEM.", "Encourage critical discussions about ethical implications of advancements.", "Support student initiatives that use STEM for local challenges."] 
+    },
+    { 
+      num: "Frame 5", 
+      title: "Sustainable futures", 
+      desc: "Cultivating equitable, just, and thriving social and ecological futures that support both ecological and human wellbeing. Reimagining the structures and setting for schooling.", 
+      strategies: ["Integrate sustainability concepts highlighting environmental roles.", "Promote systems thinking to understand interconnectedness.", "Encourage innovation in developing sustainable solutions."] 
+    }
   ];
 
   const workspace = document.getElementById("workspace");
   let highestZ = 10;
 
+  // Configuration for the 2-row layout
+  const cardWidth = 320;
+  const cardHeight = 540;
+  const horizontalGap = 40;
+  const verticalGap = 40;
+
   frames.forEach((f, index) => {
     const card = document.createElement("div");
     card.className = "card";
     
-    // Spread cards out initially
-    card.style.left = (index * 60 + 50) + "px";
-    card.style.top = (index * 30 + 50) + "px";
+    // Determine row and column
+    // Row 1: Index 0, 1, 2
+    // Row 2: Index 3, 4
+    let row = index < 3 ? 0 : 1;
+    let col = index < 3 ? index : index - 3;
+    
+    // Calculate initial positions
+    let startX = col * (cardWidth + horizontalGap);
+    let startY = row * (cardHeight + verticalGap);
+    
+    // Center the second row (2 cards) relative to the first row (3 cards)
+    if (row === 1) {
+        startX += (cardWidth + horizontalGap) / 2;
+    }
+
+    card.style.left = startX + "px";
+    card.style.top = startY + "px";
     card.style.zIndex = index;
 
     card.innerHTML = `
@@ -191,14 +242,14 @@
         </div>
         <div class="card-face card-back">
           <div class="frame-number">${f.num}</div>
-          <h3 class="strategies-heading">Strategies</h3>
+          <h3 class="strategies-heading">Strategies for Educators</h3>
           <ul class="strategies">${f.strategies.map(s => `<li>${s}</li>`).join("")}</ul>
           <button class="btn-flip">Back to Info &#8635;</button>
         </div>
       </div>
     `;
 
-    // Handle Flipping (using the button so it doesn't interfere with dragging)
+    // Flip logic
     card.querySelectorAll('.btn-flip').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -206,24 +257,24 @@
       });
     });
 
-    // Handle Dragging
+    // Drag logic
     let isDragging = false;
     let offsetX, offsetY;
 
     card.addEventListener('mousedown', (e) => {
+      if (e.target.tagName === 'BUTTON') return; // Don't drag if clicking button
       isDragging = true;
-      // Bring to front
       highestZ++;
       card.style.zIndex = highestZ;
-      
-      offsetX = e.clientX - card.offsetLeft;
-      offsetY = e.clientY - card.offsetTop;
+      offsetX = e.clientX - card.getBoundingClientRect().left;
+      offsetY = e.clientY - card.getBoundingClientRect().top;
     });
 
     document.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
-      card.style.left = (e.clientX - offsetX) + "px";
-      card.style.top = (e.clientY - offsetY) + "px";
+      const workspaceRect = workspace.getBoundingClientRect();
+      card.style.left = (e.clientX - workspaceRect.left - offsetX) + "px";
+      card.style.top = (e.clientY - workspaceRect.top - offsetY) + "px";
     });
 
     document.addEventListener('mouseup', () => {
