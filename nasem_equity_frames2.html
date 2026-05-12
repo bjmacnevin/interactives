@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NASEM 2024 Equity Frames</title>
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 40px 20px;
+    background: #000;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+  }
+
+  h1 {
+    text-align: center;
+    color: #ffd400;
+    font-weight: 600;
+    margin: 0 0 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #aaa;
+    margin: 0 0 40px;
+    font-size: 0.95rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 18px;
+    max-width: 1700px;
+    margin: 0 auto;
+  }
+
+  .card {
+    perspective: 1400px;
+    height: 580px;
+    cursor: pointer;
+  }
+
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+    transform-style: preserve-3d;
+  }
+
+  .card.flipped .card-inner {
+    transform: rotateY(180deg);
+  }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background: #fff;
+    color: #1a1a1a;
+    border: 6px solid #ffd400;
+    border-radius: 18px;
+    padding: 22px 20px 18px;
+    box-shadow: 0 6px 24px rgba(255, 212, 0, 0.18);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Specific Front Styles */
+  .card-front {
+    justify-content: flex-start; 
+    align-items: stretch;        
+    background: #fdfdfd;
+  }
+
+  .card-front .frame-number {
+    font-size: 2.8rem; 
+    font-weight: 800;
+    margin: 10px 0 20px;
+    color: #b58a00; /* Updated to match the back color */
+    text-align: center; 
+    width: 100%;
+  }
+
+  .card-front .frame-title {
+    font-size: 1.3rem;
+    text-align: left; 
+    margin-bottom: 20px;
+    width: 100%;
+    font-weight: 700;
+  }
+
+  .card-front .frame-desc {
+    font-size: 0.9rem;
+    text-align: left; 
+    line-height: 1.5;
+    flex-grow: 1;
+    overflow-y: auto;
+    color: #333;
+  }
+
+  /* Shared & Back Styles */
+  .card-back {
+    transform: rotateY(180deg);
+  }
+
+  .frame-number {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #b58a00;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .frame-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 14px;
+    line-height: 1.25;
+  }
+
+  .strategies-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #000;
+    margin: 0 0 14px;
+    line-height: 1.25;
+  }
+
+  .strategies {
+    margin: 0;
+    padding-left: 18px;
+    color: #333;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+
+  .strategies li {
+    margin-bottom: 9px;
+  }
+
+  .flip-hint {
+    margin-top: 14px;
+    font-size: 0.75rem;
+    color: #888;
+    text-align: right;
+    font-style: italic;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 50px;
+    color: #555;
+    font-size: 0.8rem;
+  }
+</style>
+</head>
+<body>
+  <h1>NASEM 2024 Equity Frames</h1>
+  <p class="subtitle">Click any card to reveal educator strategies</p>
+
+  <div class="grid" id="grid"></div>
+
+  <p class="footer">Source: National Academies of Sciences, Engineering, and Medicine (2024)</p>
+
+<script>
+  const frames = [
+    {
+      num: "Frame 1",
+      title: "Reducing gaps between groups",
+      desc: "Aim to address gaps between different groups based on race, gender identity, or some other factor such as social class. Those gaps might be related to interest in STEM, achievement, or representation within the STEM workforce. The approaches tend to emphasize interventions, typically implemented in schools or within ecosystems, evaluated in terms of their ability to reduce such gaps, and they often target members of social groups.",
+      strategies: [
+        "Analyze data to identify and understand disparities in student performance and participation.",
+        "Implement targeted interventions to support underrepresented and underserved students.",
+        "Foster an inclusive classroom culture that recognizes and values diversity by validating and incorporating Indigenous and non-Western scientific knowledge alongside Western STEM perspectives."
+      ]
+    },
+    {
+      num: "Frame 2",
+      title: "Expanding opportunity and access",
+      desc: "Focus on access to opportunities in STEM, such as those that result from differences in social and material resources necessary to learn—access to well-prepared educators, a network of adult and peer supporters for learning, and high-quality curricular experiences. Approaches to increasing access and opportunity vary, but typically focus on changing conditions for access through policy changes within institutions or use strategies for brokering opportunities across institutions.",
+      strategies: [
+        "Adopt inclusive teaching practices that accommodate diverse learning needs.",
+        "Collaborate with community organizations to provide mentorship and real-world STEM experiences.",
+        "Encourage participation in extra-curricular STEM activities, competitions, and programs."
+      ]
+    },
+    {
+      num: "Frame 3",
+      title: "Embracing heterogeneity in STEM classrooms",
+      desc: "Emphasize engaging with the concerns, lived experiences, and identities of students who have been and often continue to be marginalized in STEM education settings. Emphasize the importance of embracing the different ways of thinking, feeling, and being of young people within STEM classrooms.",
+      strategies: [
+        "Incorporate culturally relevant pedagogy that connects STEM concepts to students' lived experiences.",
+        "Facilitate collaborative learning that values and integrates multiple viewpoints.",
+        "Encourage student-led projects that allow for exploration of individual interests and cultural contexts."
+      ]
+    },
+    {
+      num: "Frame 4",
+      title: "Learning and using STEM to promote justice",
+      desc: "Center learning STEM as a resource within movements for social and socioecological justice. Throughout history, there are examples of ways that the STEM fields have been used as instruments in larger agendas of nationalism and colonialism, and their role as an instrument for justice for marginalized communities has been diminished, both in practice and within education.",
+      strategies: [
+        "Design curricula that integrate social justice themes with STEM content.",
+        "Encourage critical discussions about the ethical implications of scientific and technological advancements.",
+        "Support student initiatives that use STEM to develop solutions for local and global challenges."
+      ]
+    },
+    {
+      num: "Frame 5",
+      title: "Envisioning sustainable futures through STEM",
+      desc: "Emphasize a role for STEM education in cultivating equitable, just, and thriving social and ecological futures that attend to and support both ecological and human wellbeing. This frame is very forward looking including potentially reimagining the structures and setting for schooling.",
+      strategies: [
+        "Integrate sustainability concepts into STEM curricula, highlighting the role of science and technology in addressing environmental challenges.",
+        "Promote systems thinking to help students understand the interconnectedness of social, economic, and environmental systems.",
+        "Encourage innovation and creativity in developing sustainable solutions."
+      ]
+    }
+  ];
+
+  const grid = document.getElementById("grid");
+
+  frames.forEach(f => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const liItems = f.strategies.map(s => `<li>${s}</li>`).join("");
+
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="frame-number">${f.num}</div>
+          <h2 class="frame-title">${f.title}</h2>
+          <p class="frame-desc">${f.desc}</p>
+          <div class="flip-hint">Click to flip &#8635;</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="frame-number">${f.num}</div>
+          <h3 class="strategies-heading">Strategies for Educators</h3>
+          <ul class="strategies">${liItems}</ul>
+          <div class="flip-hint">Click to flip back &#8635;</div>
+        </div>
+      </div>
+    `;
+
+    card.addEventListener("click", () => card.classList.toggle("flipped"));
+    grid.appendChild(card);
+  });
+</script>
+</body>
+</html>
