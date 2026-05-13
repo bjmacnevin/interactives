@@ -9,16 +9,45 @@
 
   body {
     margin: 0;
-    padding: 20px;
+    padding: 0;
     background: #000;
     color: #fff;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    min-height: 100vh;
+    height: 100vh;
     overflow: hidden; 
     display: flex;
     flex-direction: column;
-    
-    /* Enhanced Golden Grid with stronger visibility */
+  }
+
+  /* Header and Subtitle containers */
+  .header-container {
+    padding: 20px 20px 0;
+    text-align: center;
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  h1 {
+    color: #ffd400;
+    font-weight: 600;
+    margin: 0;
+    text-shadow: 0 0 15px rgba(0,0,0,0.8);
+  }
+
+  .subtitle {
+    color: #aaa;
+    margin: 5px 0 0;
+    font-size: 0.95rem;
+  }
+
+  /* The Zoomable Outer Container */
+  #viewport {
+    flex-grow: 1;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    cursor: default;
+    /* Golden Grid with stronger visibility */
     background-color: #000;
     background-image: 
       radial-gradient(circle at center, transparent 0%, rgba(0,0,0,1) 95%),
@@ -27,31 +56,15 @@
     background-size: 100% 100%, 50px 50px, 50px 50px;
   }
 
-  h1 {
-    text-align: center;
-    color: #ffd400;
-    font-weight: 600;
-    margin: 10px 0 5px;
-    pointer-events: none;
-    z-index: 100;
-    text-shadow: 0 0 15px rgba(0,0,0,0.8);
-  }
-
-  .subtitle {
-    text-align: center;
-    color: #aaa;
-    margin: 0 0 10px;
-    font-size: 0.95rem;
-    pointer-events: none;
-    z-index: 100;
-  }
-
+  /* The Actual Workspace that scales */
   #workspace {
-    position: relative;
-    flex-grow: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    margin: 0 auto;
-    overflow: visible;
+    height: 100%;
+    transform-origin: center center;
+    transition: transform 0.1s ease-out;
   }
 
   .card {
@@ -176,11 +189,11 @@
 
   .footer {
     text-align: center;
-    padding: 10px;
+    padding: 15px;
     color: #ccc;
     font-size: 0.8rem;
     z-index: 100;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.8);
   }
 
   .footer a {
@@ -196,10 +209,14 @@
 </head>
 <body>
 
-  <h1>NASEM 2024 Equity Frames</h1>
-  <p class="subtitle">Drag to arrange and prioritize. Use button to flip.</p>
+  <div class="header-container">
+    <h1>NASEM 2024 Equity Frames</h1>
+    <p class="subtitle">Drag to arrange. Scroll to zoom. Use button to flip.</p>
+  </div>
 
-  <div id="workspace"></div>
+  <div id="viewport">
+    <div id="workspace"></div>
+  </div>
 
   <div class="footer">
     Based on the National Academies Report: 
@@ -211,46 +228,56 @@
     { 
       num: "Frame 1", 
       title: "Reducing gaps between groups", 
-      desc: "Aim to address gaps between different groups based on race, gender identity, or some other factor such as social class. Those gaps might be related to interest in STEM, achievement, or representation within the STEM workforce. The approaches tend to emphasize interventions, typically implemented in schools or within ecosystems, evaluated in terms of their ability to reduce such gaps, and they often target members of social groups.", 
-      strategies: ["Analyze data to identify and understand disparities in student performance and participation.", "Implement targeted interventions to support underrepresented and underserved students.", "Foster an inclusive classroom culture that recognizes and values diversity by validating and incorporating Indigenous and non-Western scientific knowledge."] 
+      desc: "Aim to address gaps between different groups based on race, gender identity, or some other factor such as social class. Those gaps might be related to interest in STEM, achievement, or representation within the STEM workforce.", 
+      strategies: ["Analyze data for disparities in participation.", "Implement targeted interventions for underserved students.", "Foster inclusive culture and incorporate diverse scientific knowledge."] 
     },
     { 
       num: "Frame 2", 
       title: "Expanding opportunity and access", 
-      desc: "Focus on access to opportunities in STEM, such as those that result from differences in social and material resources necessary to learn—access to well-prepared educators, a network of adult and peer supporters for learning, and high-quality curricular experiences. Approaches to increasing access and opportunity vary, but typically focus on changing conditions for access through policy changes within institutions or use strategies for brokering opportunities across institutions.", 
-      strategies: ["Adopt inclusive teaching practices that accommodate diverse learning needs.", "Collaborate with community organizations to provide mentorship and real-world STEM experiences.", "Encourage participation in extra-curricular STEM activities, competitions, and programs."] 
+      desc: "Focus on access to opportunities in STEM, such as access to well-prepared educators, supporter networks, and high-quality curricular experiences.", 
+      strategies: ["Adopt inclusive teaching practices.", "Collaborate with community for mentorship.", "Encourage extra-curricular STEM participation."] 
     },
     { 
       num: "Frame 3", 
-      title: "Embracing heterogeneity in STEM classrooms", 
-      desc: "Emphasize engaging with the concerns, lived experiences, and identities of students who have been and often continue to be marginalized in STEM education settings. Emphasize the importance of embracing the different ways of thinking, feeling, and being of young people within STEM classrooms.", 
-      strategies: ["Incorporate culturally relevant pedagogy that connects STEM concepts to students' lived experiences.", "Facilitate collaborative learning that values and integrates multiple viewpoints.", "Encourage student-led projects that allow for exploration of individual interests and cultural contexts."] 
+      title: "Embracing heterogeneity in STEM", 
+      desc: "Emphasize engaging with the lived experiences and identities of students who have been marginalized. Value different ways of thinking and being.", 
+      strategies: ["Use culturally relevant pedagogy.", "Facilitate collaborative learning.", "Encourage student-led cultural exploration projects."] 
     },
     { 
       num: "Frame 4", 
-      title: "Learning and using STEM to promote justice", 
-      desc: "Center learning STEM as a resource within movements for social and socioecological justice. Throughout history, there are examples of ways that the STEM fields have been used as instruments in larger agendas of nationalism and colonialism, and their role as an instrument for justice for marginalized communities has been diminished, both in practice and within education.", 
-      strategies: ["Design curricula that integrate social justice themes with STEM content.", "Encourage critical discussions about the ethical implications of scientific and technological advancements.", "Support student initiatives that use STEM to develop solutions for local and global challenges."] 
+      title: "Learning STEM to promote justice", 
+      desc: "Center learning STEM as a resource within movements for social justice. Address the history of STEM as an instrument of nationalism or colonialism.", 
+      strategies: ["Integrate social justice themes with STEM content.", "Discuss ethical implications of advancements.", "Support solutions for local/global challenges."] 
     },
     { 
       num: "Frame 5", 
-      title: "Envisioning sustainable futures through STEM", 
-      desc: "Emphasize a role for STEM education in cultivating equitable, just, and thriving social and ecological futures that attend to and support both ecological and human wellbeing. This frame is very forward looking including potentially reimagining the structures and setting for schooling.", 
-      strategies: ["Integrate sustainability concepts into STEM curricula, highlighting the role of science and technology in addressing environmental challenges.", "Promote systems thinking to help students understand the interconnectedness of social, economic, and environmental systems.", "Encourage innovation and creativity in developing sustainable solutions."] 
+      title: "Envisioning sustainable futures", 
+      desc: "Cultivate equitable and thriving social and ecological futures. Reimagining the structures and setting for schooling.", 
+      strategies: ["Integrate sustainability concepts.", "Promote systems thinking.", "Encourage innovation for sustainable solutions."] 
     }
   ];
 
   const workspace = document.getElementById("workspace");
+  const viewport = document.getElementById("viewport");
   let highestZ = 10;
+  let scale = 1;
 
   const cardWidth = 320;
   const cardHeight = 540;
   const hGap = 40;
   const vGap = 40;
 
+  // Zoom handling
+  viewport.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    scale = Math.min(Math.max(0.3, scale + delta), 2); // Limit zoom range
+    workspace.style.transform = `scale(${scale})`;
+  }, { passive: false });
+
   function initLayout() {
-    const wsWidth = workspace.offsetWidth;
-    const wsHeight = workspace.offsetHeight;
+    const wsWidth = viewport.offsetWidth;
+    const wsHeight = viewport.offsetHeight;
 
     const row1Width = (cardWidth * 3) + (hGap * 2);
     const row2Width = (cardWidth * 2) + hGap;
@@ -309,15 +336,17 @@
         isDragging = true;
         highestZ++;
         card.style.zIndex = highestZ;
-        offX = e.clientX - card.getBoundingClientRect().left;
-        offY = e.clientY - card.getBoundingClientRect().top;
+        
+        // Adjust drag offset based on scale
+        offX = (e.clientX / scale) - (card.offsetLeft);
+        offY = (e.clientY / scale) - (card.offsetTop);
       });
 
       document.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
-        const rect = workspace.getBoundingClientRect();
-        card.style.left = (e.clientX - rect.left - offX) + "px";
-        card.style.top = (e.clientY - rect.top - offY) + "px";
+        // Position card correctly regardless of zoom level
+        card.style.left = (e.clientX / scale - offX) + "px";
+        card.style.top = (e.clientY / scale - offY) + "px";
       });
 
       document.addEventListener('mouseup', () => { isDragging = false; });
