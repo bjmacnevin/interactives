@@ -19,7 +19,6 @@
     flex-direction: column;
   }
 
-  /* Header and Subtitle containers */
   .header-container {
     padding: 20px 20px 0;
     text-align: center;
@@ -40,14 +39,12 @@
     font-size: 0.95rem;
   }
 
-  /* The Zoomable Outer Container */
   #viewport {
     flex-grow: 1;
     width: 100%;
     overflow: hidden;
     position: relative;
-    cursor: default;
-    /* Golden Grid with stronger visibility */
+    /* Golden Grid with radial fade */
     background-color: #000;
     background-image: 
       radial-gradient(circle at center, transparent 0%, rgba(0,0,0,1) 95%),
@@ -56,7 +53,6 @@
     background-size: 100% 100%, 50px 50px, 50px 50px;
   }
 
-  /* The Actual Workspace that scales */
   #workspace {
     position: absolute;
     top: 0;
@@ -64,7 +60,7 @@
     width: 100%;
     height: 100%;
     transform-origin: center center;
-    transition: transform 0.1s ease-out;
+    transition: transform 0.2s ease-out; /* Slight transition for smooth auto-scaling */
   }
 
   .card {
@@ -77,9 +73,7 @@
     touch-action: none;
   }
 
-  .card:active {
-    cursor: grabbing;
-  }
+  .card:active { cursor: grabbing; }
 
   .card-inner {
     position: relative;
@@ -89,9 +83,7 @@
     transform-style: preserve-3d;
   }
 
-  .card.flipped .card-inner {
-    transform: rotateY(180deg);
-  }
+  .card.flipped .card-inner { transform: rotateY(180deg); }
 
   .card-face {
     position: absolute;
@@ -108,11 +100,7 @@
     flex-direction: column;
   }
 
-  /* Front Styles */
-  .card-front {
-    justify-content: flex-start;
-    background: #fdfdfd;
-  }
+  .card-front { justify-content: flex-start; background: #fdfdfd; }
 
   .card-front .frame-number {
     font-size: 2.8rem;
@@ -141,10 +129,7 @@
     margin-bottom: 10px;
   }
 
-  /* Back Styles */
-  .card-back {
-    transform: rotateY(180deg);
-  }
+  .card-back { transform: rotateY(180deg); }
 
   .card-back .frame-number {
     font-size: 0.8rem;
@@ -196,15 +181,8 @@
     background: rgba(0,0,0,0.8);
   }
 
-  .footer a {
-    color: #ffd400;
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  .footer a:hover {
-    text-decoration: underline;
-  }
+  .footer a { color: #ffd400; text-decoration: none; font-weight: 600; }
+  .footer a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -267,11 +245,10 @@
   const hGap = 40;
   const vGap = 40;
 
-  // Zoom handling
   viewport.addEventListener('wheel', (e) => {
     e.preventDefault();
-    const delta = e.deltaY > 0 ? -0.1 : 0.1;
-    scale = Math.min(Math.max(0.3, scale + delta), 2); // Limit zoom range
+    const delta = e.deltaY > 0 ? -0.05 : 0.05;
+    scale = Math.min(Math.max(0.2, scale + delta), 2);
     workspace.style.transform = `scale(${scale})`;
   }, { passive: false });
 
@@ -280,12 +257,19 @@
     const wsHeight = viewport.offsetHeight;
 
     const row1Width = (cardWidth * 3) + (hGap * 2);
-    const row2Width = (cardWidth * 2) + hGap;
-    
-    const startX_Row1 = (wsWidth - row1Width) / 2;
-    const startX_Row2 = (wsWidth - row2Width) / 2;
-    
     const totalBlockHeight = (cardHeight * 2) + vGap;
+
+    // A: Calculate Scale to Fit
+    const padding = 60; // Extra room for comfort
+    const scaleX = wsWidth / (row1Width + padding);
+    const scaleY = wsHeight / (totalBlockHeight + padding);
+    
+    // Auto-set the initial scale (don't exceed 1.0 on large screens)
+    scale = Math.min(scaleX, scaleY, 1.0);
+    workspace.style.transform = `scale(${scale})`;
+
+    const startX_Row1 = (wsWidth - row1Width) / 2;
+    const startX_Row2 = (wsWidth - ((cardWidth * 2) + hGap)) / 2;
     const startY = (wsHeight - totalBlockHeight) / 2;
 
     workspace.innerHTML = ""; 
@@ -337,20 +321,18 @@
         highestZ++;
         card.style.zIndex = highestZ;
         
-        // Adjust drag offset based on scale
-        offX = (e.clientX / scale) - (card.offsetLeft);
-        offY = (e.clientY / scale) - (card.offsetTop);
+        // Use normalized client coords for drag start
+        offX = (e.clientX - viewport.offsetLeft) / scale - card.offsetLeft;
+        offY = (e.clientY - viewport.offsetTop) / scale - card.offsetTop;
       });
 
       document.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
-        // Position card correctly regardless of zoom level
-        card.style.left = (e.clientX / scale - offX) + "px";
-        card.style.top = (e.clientY / scale - offY) + "px";
+        card.style.left = ((e.clientX - viewport.offsetLeft) / scale - offX) + "px";
+        card.style.top = ((e.clientY - viewport.offsetTop) / scale - offY) + "px";
       });
 
       document.addEventListener('mouseup', () => { isDragging = false; });
-
       workspace.appendChild(card);
     });
   }
